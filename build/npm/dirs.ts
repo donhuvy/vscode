@@ -14,6 +14,7 @@ export const dirs = [
 	'build/rspack',
 	'build/vite',
 	'extensions',
+	'extensions/bkit-agent-web',
 	'extensions/configuration-editing',
 	'extensions/copilot',
 	'extensions/css-language-features',

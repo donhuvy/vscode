@@ -1,0 +1,5 @@
+{
+  "name": "BKIT AI Enterprise Profile (Light Theme)",
+  "settings": "{\n  \"workbench.colorTheme\": \"Default Light Modern\",\n  \"workbench.preferredLightColorTheme\": \"Default Light Modern\",\n  \"window.autoDetectColorScheme\": false,\n  \"workbench.browser.enableChatTools\": true,\n  \"chat.plugins.enabled\": true,\n  \"chat.agentFilesLocations\": [\n    \"~/.copilot/agents\",\n    \".github/agents\"\n  ],\n  \"bkit.authUrl\": \"https://auth.bkit.vn\",\n  \"bkit.backendApiUrl\": \"https://a.bkit.vn\",\n  \"bkit.model\": \"deepseek-chat\",\n  \"bkit.enableWebBrowser\": true\n}",
+  "globalState": "{}"
+}

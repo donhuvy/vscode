@@ -1,0 +1,138 @@
+{
+  "name": "bkit-agent-web",
+  "displayName": "BKIT AI Agent & Web Browser",
+  "description": "BKIT AI Custom Agent with Web Browsing, Authentication via auth.bkit.vn and DeepSeek Backend LLM Proxy",
+  "version": "1.0.0",
+  "publisher": "bkit",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "AI",
+    "Chat",
+    "Other"
+  ],
+  "icon": "icon.png",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "commands": [
+      {
+        "command": "bkit.login",
+        "title": "BKIT: Đăng nhập vào hệ thống BKIT (auth.bkit.vn)",
+        "category": "BKIT"
+      },
+      {
+        "command": "bkit.logout",
+        "title": "BKIT: Đăng xuất khỏi hệ thống BKIT",
+        "category": "BKIT"
+      },
+      {
+        "command": "bkit.openBrowser",
+        "title": "BKIT: Mở trình duyệt web tra cứu thông tin",
+        "category": "BKIT"
+      },
+      {
+        "command": "bkit.checkStatus",
+        "title": "BKIT: Kiểm tra trạng thái kết nối AI Agent & Model Provider",
+        "category": "BKIT"
+      },
+      {
+        "command": "bkit.copyModelProviderUrl",
+        "title": "BKIT: Sao chép URL Model Provider (OpenAI API: http://127.0.0.1:51111/v1)",
+        "category": "BKIT"
+      },
+      {
+        "command": "bkit.configureAsDefaultModel",
+        "title": "BKIT: Hướng dẫn kết nối làm Model Provider cho Continue / Cline / VS Code",
+        "category": "BKIT"
+      }
+    ],
+    "languageModelChatProviders": [
+      {
+        "vendor": "bkit",
+        "displayName": "BKIT AI Models (auth.bkit.vn)"
+      }
+    ],
+    "chatParticipants": [
+      {
+        "id": "bkit.agent",
+        "name": "bkit",
+        "fullName": "BKIT AI Assistant",
+        "description": "Tác nhân AI BKIT hỗ trợ kế toán doanh nghiệp và duyệt web thông minh.",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "web",
+            "description": "Duyệt web và tra cứu thông tin trực tuyến (MST, hóa đơn, tỷ giá, luật thuế)"
+          },
+          {
+            "name": "acc",
+            "description": "Hỗ trợ định khoản và xử lý nghiệp vụ kế toán theo TT 99/2025/TT-BTC & TT 200"
+          },
+          {
+            "name": "login",
+            "description": "Đăng nhập tài khoản BKIT (auth.bkit.vn)"
+          }
+        ]
+      }
+    ],
+    "configuration": {
+      "title": "BKIT AI Agent & Model Provider Settings",
+      "properties": {
+        "bkit.authUrl": {
+          "type": "string",
+          "default": "https://auth.bkit.vn",
+          "description": "URL máy chủ xác thực Keycloak của BKIT"
+        },
+        "bkit.backendApiUrl": {
+          "type": "string",
+          "default": "https://a2a.bkit.vn",
+          "description": "URL máy chủ Backend BKIT AI Gateway"
+        },
+        "bkit.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API Key DeepSeek / BKIT AI (kết nối trực tiếp nhà cung cấp vendor: 'bkit')",
+          "scope": "application"
+        },
+        "bkit.aiBaseUrl": {
+          "type": "string",
+          "default": "https://api.deepseek.com",
+          "description": "Base URL của máy chủ AI DeepSeek / OpenAI API tương thích",
+          "scope": "application"
+        },
+        "bkit.model": {
+          "type": "string",
+          "default": "deepseek-chat",
+          "enum": [
+            "deepseek-chat",
+            "deepseek-reasoner",
+            "deepseek-flash-4"
+          ],
+          "description": "Mô hình AI mặc định được điều phối từ backend"
+        },
+        "bkit.enableWebBrowser": {
+          "type": "boolean",
+          "default": true,
+          "description": "Bật công cụ duyệt web và tương tác trình duyệt cho Agent"
+        },
+        "bkit.enableLocalOpenAiServer": {
+          "type": "boolean",
+          "default": true,
+          "description": "Bật máy chủ nội bộ chuẩn OpenAI API (http://127.0.0.1:51111/v1) để các công cụ AI khác dùng BKIT làm Model Provider"
+        },
+        "bkit.localServerPort": {
+          "type": "number",
+          "default": 51111,
+          "description": "Cổng mạng chạy máy chủ nội bộ tương thích OpenAI API"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "bkit-agent-web",
+  "description": "BKIT AI Custom Agent with Web Browsing, Authentication via auth.bkit.vn and DeepSeek Backend LLM Proxy",
+  "version": "1.0.0",
+  "author": {
+    "name": "BKIT Corporation",
+    "email": "contact@bkit.vn",
+    "url": "https://bkit.vn"
+  },
+  "homepage": "https://bkit.vn/ai-agents",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/donhuvy/acc10.git"
+  },
+  "license": "PROPRIETARY",
+  "keywords": [
+    "bkit",
+    "accounting",
+    "web-browsing",
+    "deepseek",
+    "ai-agent",
+    "custom-agent",
+    "copilot"
+  ],
+  "extensions": {
+    "com.github.copilot": {
+      "agents": [
+        "com.github.copilot/agents/bkit-web-browser.agent.md",
+        "com.github.copilot/agents/bkit-accounting-assistant.agent.md"
+      ],
+      "rules": [
+        "com.github.copilot/rules/web-safety-rules.md"
+      ]
+    }
+  }
+}

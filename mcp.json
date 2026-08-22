@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/mcp-server-config.json",
+  "mcpServers": {
+    "bkit": {
+      "serverUrl": "https://mcp.bkit.vn/mcp",
+      "transport": "sse"
+    }
+  }
+}
