@@ -11,7 +11,7 @@ export class BkitLocalModelServer implements vscode.Disposable {
 
   constructor(
     private readonly getAccessToken: () => Promise<string | null>,
-    private readonly context: vscode.ExtensionContext
+    _context: vscode.ExtensionContext
   ) {}
 
   public async start(): Promise<number> {

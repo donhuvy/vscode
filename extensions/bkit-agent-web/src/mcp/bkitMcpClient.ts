@@ -1,5 +1,4 @@
 import * as https from 'https';
-import * as http from 'http';
 import { URL } from 'url';
 
 export interface McpTool {

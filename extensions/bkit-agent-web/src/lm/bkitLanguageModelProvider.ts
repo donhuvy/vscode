@@ -48,7 +48,7 @@ export class BkitLanguageModelProvider implements vscode.Disposable {
 
   constructor(
     private readonly getAccessToken: () => Promise<string | null>,
-    private readonly context: vscode.ExtensionContext
+    _context: vscode.ExtensionContext
   ) {
     this._registerProvider();
   }
@@ -57,7 +57,7 @@ export class BkitLanguageModelProvider implements vscode.Disposable {
     try {
       const lmAny = vscode.lm as any;
       const providerImpl = {
-        provideLanguageModelChatInformation: async (options?: any, token?: vscode.CancellationToken) => {
+        provideLanguageModelChatInformation: async (_options?: any, _token?: vscode.CancellationToken) => {
           return BKIT_AVAILABLE_MODELS.map(m => ({
             id: m.id,
             name: m.name,
@@ -70,7 +70,7 @@ export class BkitLanguageModelProvider implements vscode.Disposable {
         provideLanguageModelChatResponse: async (
           model: any,
           messages: readonly any[],
-          options: any,
+          _options: any,
           progress: vscode.Progress<any>,
           token: vscode.CancellationToken
         ) => {
@@ -80,7 +80,7 @@ export class BkitLanguageModelProvider implements vscode.Disposable {
         provideLanguageModelResponse: async (
           model: any,
           messages: readonly any[],
-          options: any,
+          _options: any,
           progress: vscode.Progress<any>,
           token: vscode.CancellationToken
         ) => {
@@ -90,14 +90,14 @@ export class BkitLanguageModelProvider implements vscode.Disposable {
         sendChatRequest: async (
           model: any,
           messages: readonly any[],
-          options: any,
+          _options: any,
           progress: vscode.Progress<any>,
           token: vscode.CancellationToken
         ) => {
           const modelId = typeof model === 'string' ? model : (model?.id || 'bkit-deepseek-chat');
           await this.handleChatRequest(modelId, messages, progress, token);
         },
-        provideTokenCount: async (model: any, text: string | any, token: vscode.CancellationToken) => {
+        provideTokenCount: async (_model: any, text: string | any, _token: vscode.CancellationToken) => {
           let rawStr = '';
           if (typeof text === 'string') {
             rawStr = text;

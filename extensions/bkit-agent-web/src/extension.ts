@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { BkitAuthProvider } from './auth/bkitAuthProvider';
 import { DeepSeekProxyService, ChatMessage } from './lm/deepseekProxyProvider';
-import { BkitLanguageModelProvider, BKIT_AVAILABLE_MODELS } from './lm/bkitLanguageModelProvider';
+import { BkitLanguageModelProvider } from './lm/bkitLanguageModelProvider';
 import { BkitLocalModelServer } from './lm/bkitLocalModelServer';
 import { BrowserTools } from './browser/browserTools';
 import { BkitMcpClient } from './mcp/bkitMcpClient';
@@ -29,7 +29,7 @@ export async function activate(context: vscode.ExtensionContext) {
   localModelServerInstance = localServer;
   context.subscriptions.push(localServer);
 
-  const serverPort = await localServer.start();
+  await localServer.start();
 
   // 5. Status Bar Item
   const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
@@ -110,25 +110,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand('bkit.configureAsDefaultModel', async () => {
       const port = localServer.getPort();
-      const modelsList = BKIT_AVAILABLE_MODELS.map(m => `• **${m.id}**: ${m.name}`).join('\n');
-      const info = `
-### 🚀 Cấu hình BKIT làm Model Provider độc lập
-
-Hệ thống BKIT cung cấp 2 phương thức kết nối:
-
-#### 1. Sử dụng trực tiếp trong VS Code / GitHub Copilot Agents (Native Provider):
-- Nhà cung cấp (Vendor): \`bkit\`
-- Mô hình: \`bkit-deepseek-flash\`, \`bkit-deepseek-chat\`, \`bkit-deepseek-reasoner\`
-
-#### 2. Dùng cho Continue / Cline / Roo Code / Cursor / Aider (OpenAI Compatible):
-- **Base URL**: \`http://127.0.0.1:${port}/v1\`
-- **API Key**: \`bkit\` hoặc Khóa API đã cấu hình
-- **Danh sách Models khả dụng**:
-${modelsList}
-`;
       const copyBtn = 'Sao chép Base URL';
       const action = await vscode.window.showInformationMessage(
-        'BKIT AI Model Provider (vendor: bkit) đã sẵn sàng hoạt động.',
+        `BKIT AI Model Provider (vendor: bkit) đang chạy tại http://127.0.0.1:${port}/v1 cho Cline, Continue, Cursor và VS Code Native LM.`,
         copyBtn
       );
       if (action === copyBtn) {

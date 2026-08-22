@@ -63,7 +63,7 @@ export class BkitAuthProvider implements vscode.AuthenticationProvider, vscode.D
     }
   }
 
-  public async getSessions(scopes?: readonly string[]): Promise<vscode.AuthenticationSession[]> {
+  public async getSessions(_scopes?: readonly string[]): Promise<vscode.AuthenticationSession[]> {
     if (!this._session) {
       return [];
     }
@@ -74,7 +74,7 @@ export class BkitAuthProvider implements vscode.AuthenticationProvider, vscode.D
     return [this._session];
   }
 
-  public async createSession(scopes: readonly string[]): Promise<vscode.AuthenticationSession> {
+  public async createSession(_scopes: readonly string[]): Promise<vscode.AuthenticationSession> {
     const tokenResult = await this._loginViaPkceLoopback();
     const username = tokenResult.userProfile?.name || tokenResult.userProfile?.preferred_username || tokenResult.userProfile?.email || 'Tài khoản BKIT';
 
