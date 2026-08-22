@@ -83,9 +83,11 @@ $VscodeSettingsPath = Join-Path $env:APPDATA "Code\User\settings.json"
 if (Test-Path $VscodeSettingsPath) {
     try {
         $settingsContent = Get-Content -Raw -Path $VscodeSettingsPath -Encoding UTF8 | ConvertFrom-Json
-        $settingsContent | Add-Member -NotePropertyName "workbench.colorTheme" -NotePropertyValue "Default Light Modern" -Force
-        $settingsContent | Add-Member -NotePropertyName "workbench.preferredLightColorTheme" -NotePropertyValue "Default Light Modern" -Force
+        $settingsContent | Add-Member -NotePropertyName "workbench.colorTheme" -NotePropertyValue "Light 2026" -Force
+        $settingsContent | Add-Member -NotePropertyName "workbench.preferredLightColorTheme" -NotePropertyValue "Light 2026" -Force
         $settingsContent | Add-Member -NotePropertyName "window.autoDetectColorScheme" -NotePropertyValue $false -Force
+        $settingsContent | Add-Member -NotePropertyName "workbench.startupEditor" -NotePropertyValue "none" -Force
+        $settingsContent | Add-Member -NotePropertyName "workbench.welcomePage.experimentalOnboarding" -NotePropertyValue $false -Force
         $settingsContent | Add-Member -NotePropertyName "workbench.browser.enableChatTools" -NotePropertyValue $true -Force
         $settingsContent | Add-Member -NotePropertyName "chat.plugins.enabled" -NotePropertyValue $true -Force
         $settingsContent | Add-Member -NotePropertyName "bkit.apiKey" -NotePropertyValue $ConfiguredApiKey -Force
@@ -99,6 +101,19 @@ if (Test-Path $VscodeSettingsPath) {
     } catch {
         Write-Host "[!] Bỏ qua cập nhật file settings.json do định dạng riêng." -ForegroundColor Yellow
     }
+}
+
+# Install Extensions
+$BkitVsix = Join-Path $ScriptDir "bkit-agent-web-1.0.0.vsix"
+if (Test-Path $BkitVsix) {
+    & $CodeCmd --install-extension $BkitVsix --force | Out-Null
+    Write-Host "[+] Đã cài đặt tiện ích: BKIT AI Agent & Web Browser." -ForegroundColor Gray
+}
+
+$DeepSeekVsix = Join-Path $ScriptDir "deepseek-v4-for-copilot.vsix"
+if (Test-Path $DeepSeekVsix) {
+    & $CodeCmd --install-extension $DeepSeekVsix --force | Out-Null
+    Write-Host "[+] Đã cài đặt tiện ích: Vizards.deepseek-v4-for-copilot." -ForegroundColor Gray
 }
 
 # 4. Launch VS Code
