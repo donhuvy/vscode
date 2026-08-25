@@ -1,0 +1,258 @@
+{
+	"version": "1.0.0",
+	"contents": {
+		"vs/base/common/keybindingLabels": {
+			"altKey": "Alt",
+			"altKey.long": "Alt",
+			"cmdKey.long": "Command",
+			"ctrlKey": "Ctrl",
+			"ctrlKey.long": "Control",
+			"optKey.long": "Option",
+			"shiftKey": "Shift",
+			"shiftKey.long": "Shift",
+			"superKey": "Super",
+			"windowsKey": "Windows",
+			"windowsKey.long": "Phím Windows"
+		},
+		"vs/platform/dialogs/common/dialogs": {
+			"cancel": "Hủy",
+			"close": "Đóng",
+			"dontSave": "Không lưu",
+			"no": "Không",
+			"ok": "OK",
+			"open": "Mở",
+			"save": "Lưu",
+			"yes": "Có"
+		},
+		"vs/workbench/browser/parts/titlebar/menubarControl": {
+			"mFile": "Tệp (&&F)",
+			"mEdit": "Chỉnh sửa (&&E)",
+			"mSelection": "Lựa chọn (&&S)",
+			"mView": "Xem (&&V)",
+			"mGo": "Đi đến (&&G)",
+			"mRun": "Chạy (&&R)",
+			"mTerminal": "Terminal (&&T)",
+			"mHelp": "Trợ giúp (&&H)",
+			"goToSetting": "Mở Cài đặt",
+			"checkingForUpdates": "Đang kiểm tra bản cập nhật...",
+			"DownloadingUpdate": "Đang tải xuống bản cập nhật...",
+			"installingUpdate": "Đang cài đặt bản cập nhật...",
+			"cancellingUpdate": "Đang hủy cập nhật..."
+		},
+		"vs/workbench/browser/parts/titlebar/titlebarActions": {
+			"accounts": "Tài khoản",
+			"manage": "Quản lý",
+			"toggle.commandCenter": "Trung tâm lệnh",
+			"toggle.layout": "Điều khiển bố cục",
+			"toggle.notifications": "Thông báo",
+			"toggle.customTitleBar": "Thanh tiêu đề tùy chỉnh",
+			"toggle.editorActions": "Hành động trình soạn thảo"
+		},
+		"vs/workbench/browser/parts/titlebar/commandCenterControl": {
+			"label.dfl": "Tìm kiếm",
+			"title3": "Trung tâm lệnh"
+		},
+		"vs/workbench/browser/actions/workspaceActions": {
+			"openFile": "Mở tệp...",
+			"openFolder": "Mở thư mục...",
+			"openWorkspace": "Mở không gian làm việc từ tệp...",
+			"openFileFolder": "Mở...",
+			"saveWorkspaceAs": "Lưu không gian làm việc thành...",
+			"closeWorkspace": "Đóng không gian làm việc",
+			"closeFolder": "Đóng thư mục"
+		},
+		"vs/workbench/browser/actions/windowActions": {
+			"newWindow": "Cửa sổ mới",
+			"closeWindow": "Đóng cửa sổ",
+			"reloadWindow": "Tải lại cửa sổ",
+			"toggleFullScreen": "Bật/Tắt toàn màn hình",
+			"toggleZenMode": "Bật/Tắt chế độ Zen"
+		},
+		"vs/workbench/browser/actions/layoutActions": {
+			"toggleSidebarPosition": "Chuyển vị trí thanh bên",
+			"toggleSidebar": "Ẩn/Hiện thanh bên",
+			"togglePanel": "Ẩn/Hiện bảng điều khiển",
+			"toggleStatusbar": "Ẩn/Hiện thanh trạng thái",
+			"toggleActivityBar": "Ẩn/Hiện thanh hoạt động"
+		},
+		"vs/workbench/browser/parts/editor/editorActions": {
+			"close": "Đóng",
+			"closeOthers": "Đóng các thẻ khác",
+			"closeSaved": "Đóng các tệp đã lưu",
+			"closeAll": "Đóng tất cả",
+			"splitEditor": "Chia trình soạn thảo",
+			"splitEditorRight": "Chia sang phải",
+			"splitEditorDown": "Chia xuống dưới",
+			"splitEditorLeft": "Chia sang trái",
+			"splitEditorUp": "Chia lên trên",
+			"reopenClosedEditor": "Mở lại trình soạn thảo đã đóng",
+			"keepEditor": "Ghim trình soạn thảo",
+			"pinEditor": "Ghim",
+			"unpinEditor": "Bỏ ghim"
+		},
+		"vs/workbench/contrib/files/browser/fileActions": {
+			"newFile": "Tệp mới...",
+			"newFolder": "Thư mục mới...",
+			"save": "Lưu",
+			"saveAs": "Lưu dưới dạng...",
+			"saveAll": "Lưu tất cả",
+			"delete": "Xóa",
+			"deletePermanently": "Xóa vĩnh viễn",
+			"rename": "Đổi tên",
+			"copyFile": "Sao chép",
+			"pasteFile": "Dán",
+			"cutFile": "Cắt",
+			"copyPath": "Sao chép đường dẫn",
+			"copyRelativePath": "Sao chép đường dẫn tương đối",
+			"revealInExplorer": "Hiển thị trong File Explorer",
+			"openToSide": "Mở sang bên cạnh",
+			"compareWithSaved": "So sánh với bản đã lưu",
+			"refresh": "Làm mới",
+			"collapseExplorerFolders": "Thu gọn tất cả thư mục"
+		},
+		"vs/workbench/contrib/files/browser/fileImportExport": {
+			"uploadingFiles": "Đang tải lên",
+			"downloadingFiles": "Đang tải xuống",
+			"copyingFiles": "Đang sao chép...",
+			"copyFolder": "&&Sao chép thư mục",
+			"copyFolders": "&&Sao chép các thư mục",
+			"addFolder": "&&Thêm thư mục vào không gian làm việc",
+			"addFolders": "&&Thêm các thư mục vào không gian làm việc",
+			"downloadButton": "Tải xuống",
+			"chooseWhereToDownload": "Chọn vị trí lưu tệp",
+			"confirmOverwrite": "Tệp hoặc thư mục có tên '{0}' đã tồn tại. Bạn có muốn ghi đè không?",
+			"irreversible": "Hành động này không thể hoàn tác!"
+		},
+		"vs/workbench/contrib/files/common/files": {
+			"files": "Tệp",
+			"folders": "Thư mục",
+			"explorer": "Trình khám phá",
+			"openEditors": "Trình soạn thảo đang mở"
+		},
+		"vs/workbench/contrib/preferences/browser/preferencesActions": {
+			"openSettings": "Cài đặt",
+			"openSettings2": "Mở Cài đặt",
+			"openGlobalKeybindings": "Phím tắt",
+			"openGlobalKeybindingsJson": "Mở Phím tắt (JSON)",
+			"openSettingsJson": "Mở Cài đặt (JSON)",
+			"openDefaultSettingsJson": "Mở Cài đặt mặc định (JSON)",
+			"configureLanguageBasedSettings": "Cấu hình cài đặt theo ngôn ngữ..."
+		},
+		"vs/workbench/contrib/preferences/browser/settingsEditor2": {
+			"searchSettings": "Tìm kiếm cài đặt",
+			"user": "Người dùng",
+			"workspace": "Không gian làm việc",
+			"folder": "Thư mục",
+			"modified": "Đã sửa đổi"
+		},
+		"vs/workbench/contrib/preferences/browser/keybindingsEditor": {
+			"searchKeybindings": "Nhập để tìm kiếm phím tắt",
+			"recordKeys": "Ghi lại tổ hợp phím",
+			"addKeybinding": "Thêm phím tắt",
+			"changeKeybinding": "Đổi phím tắt",
+			"removeKeybinding": "Xóa phím tắt",
+			"resetKeybinding": "Đặt lại phím tắt"
+		},
+		"vs/workbench/contrib/search/browser/searchActions": {
+			"findInFiles": "Tìm trong tệp",
+			"replaceInFiles": "Thay thế trong tệp",
+			"refresh": "Làm mới",
+			"clearSearchHistory": "Xóa lịch sử tìm kiếm"
+		},
+		"vs/workbench/contrib/search/browser/searchView": {
+			"search": "Tìm kiếm",
+			"replace": "Thay thế",
+			"replaceAll": "Thay thế tất cả",
+			"matchCase": "Khớp chữ hoa/thường",
+			"matchWholeWord": "Khớp toàn bộ từ",
+			"useRegularExpression": "Sử dụng biểu thức chính quy (Regex)",
+			"filesToInclude": "Tệp cần tìm",
+			"filesToExclude": "Tệp loại trừ",
+			"noResults": "Không tìm thấy kết quả phù hợp"
+		},
+		"vs/workbench/contrib/scm/browser/scm": {
+			"sourceControl": "Quản lý mã nguồn",
+			"commit": "Commit",
+			"commitAll": "Commit tất cả",
+			"stageAll": "Stage tất cả thay đổi",
+			"unstageAll": "Unstage tất cả thay đổi",
+			"discardAll": "Hủy bỏ tất cả thay đổi",
+			"refresh": "Làm mới"
+		},
+		"vs/workbench/contrib/debug/browser/debugActions": {
+			"startDebug": "Bắt đầu gỡ lỗi",
+			"run": "Chạy không gỡ lỗi",
+			"restartDebug": "Khởi động lại",
+			"stopDebug": "Dừng",
+			"pauseDebug": "Tạm dừng",
+			"continueDebug": "Tiếp tục",
+			"stepOver": "Bước qua (Step Over)",
+			"stepInto": "Bước vào (Step Into)",
+			"stepOut": "Bước ra (Step Out)",
+			"restartFrame": "Khởi động lại khung"
+		},
+		"vs/workbench/contrib/terminal/browser/terminalActions": {
+			"newTerminal": "Terminal mới",
+			"splitTerminal": "Chia Terminal",
+			"killTerminal": "Đóng Terminal",
+			"clearTerminal": "Xóa màn hình Terminal",
+			"selectDefaultShell": "Chọn Shell mặc định"
+		},
+		"vs/workbench/contrib/extensions/browser/extensionsActions": {
+			"install": "Cài đặt",
+			"uninstall": "Gỡ cài đặt",
+			"disable": "Vô hiệu hóa",
+			"enable": "Kích hoạt",
+			"update": "Cập nhật",
+			"manage": "Quản lý",
+			"installExtension": "Cài đặt gói mở rộng",
+			"checkUpdates": "Kiểm tra cập nhật gói mở rộng"
+		},
+		"vs/workbench/contrib/extensions/browser/extensionsViewlet": {
+			"extensions": "Gói mở rộng",
+			"searchExtensions": "Tìm kiếm gói mở rộng trên Marketplace",
+			"installed": "Đã cài đặt",
+			"popular": "Phổ biến",
+			"recommended": "Khuyên dùng"
+		},
+		"vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted": {
+			"welcome": "Chào mừng",
+			"newFile": "Tệp mới",
+			"openFile": "Mở tệp...",
+			"openFolder": "Mở thư mục...",
+			"cloneRepo": "Sao chép Git Repository...",
+			"recent": "Gần đây",
+			"walkthrough": "Bắt đầu"
+		},
+		"vs/editor/common/editorContextKeys": {
+			"editorTextFocus": "Con trỏ nằm trong trình soạn thảo văn bản",
+			"editorFocus": "Trình soạn thảo có tiêu điểm"
+		},
+		"vs/editor/contrib/find/browser/findWidget": {
+			"find": "Tìm kiếm",
+			"replace": "Thay thế",
+			"matchCase": "Khớp chữ hoa/thường",
+			"matchWholeWord": "Khớp toàn bộ từ",
+			"useRegularExpression": "Biểu thức chính quy",
+			"nextMatch": "Kết quả tiếp theo",
+			"previousMatch": "Kết quả trước",
+			"close": "Đóng"
+		},
+		"vs/editor/contrib/suggest/browser/suggestWidget": {
+			"readMore": "Xem thêm",
+			"loading": "Đang tải gợi ý..."
+		},
+		"vs/editor/contrib/gotoSymbol/browser/goToCommands": {
+			"goToDefinition": "Đi đến định nghĩa",
+			"peekDefinition": "Xem nhanh định nghĩa",
+			"goToDeclaration": "Đi đến khai báo",
+			"goToTypeDefinition": "Đi đến định nghĩa kiểu",
+			"goToImplementations": "Đi đến phần triển khai",
+			"goToReferences": "Đi đến các tham chiếu"
+		},
+		"vs/editor/contrib/comment/browser/comment": {
+			"toggleLineComment": "Bật/Tắt chú thích dòng",
+			"toggleBlockComment": "Bật/Tắt chú thích khối"
+		}
+	}
+}

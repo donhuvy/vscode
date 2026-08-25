@@ -1,0 +1,25 @@
+{
+	"name": "vscode-language-pack-vi",
+	"displayName": "Vietnamese Language Pack for Visual Studio Code",
+	"description": "Gói ngôn ngữ Tiếng Việt cho Visual Studio Code",
+	"version": "1.0.0",
+	"publisher": "MS-CEINTL",
+	"engines": {
+		"vscode": "^1.0.0"
+	},
+	"contributes": {
+		"localizations": [
+			{
+				"languageId": "vi",
+				"languageName": "Vietnamese",
+				"localizedLanguageName": "Tiếng Việt",
+				"translations": [
+					{
+						"id": "vscode",
+						"path": "./translations/main.i18n.json"
+					}
+				]
+			}
+		]
+	}
+}

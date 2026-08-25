@@ -5,7 +5,7 @@
 
 import * as nls from '../../nls.js';
 
-export const LANGUAGE_DEFAULT = 'en';
+export const LANGUAGE_DEFAULT = 'vi';
 
 let _isWindows = false;
 let _isMacintosh = false;

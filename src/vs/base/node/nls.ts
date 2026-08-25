@@ -53,12 +53,31 @@ export async function resolveNLSConfiguration({ userLocale, osLocale, userDataPa
 	}
 
 	try {
-		const languagePacks = await getLanguagePackConfigurations(userDataPath);
+		let languagePacks = await getLanguagePackConfigurations(userDataPath);
 		if (!languagePacks) {
-			return defaultNLSConfiguration(userLocale, osLocale, nlsMetadataPath);
+			languagePacks = {};
 		}
 
-		const resolvedLanguage = resolveLanguagePackLanguage(languagePacks, userLocale);
+		let resolvedLanguage = resolveLanguagePackLanguage(languagePacks, userLocale);
+		if (!resolvedLanguage) {
+			const candidatePaths = [
+				join(nlsMetadataPath, '..', 'extensions', `vscode-language-pack-${userLocale}`, 'translations', 'main.i18n.json'),
+				join(nlsMetadataPath, '..', '..', 'extensions', `vscode-language-pack-${userLocale}`, 'translations', 'main.i18n.json'),
+				join(nlsMetadataPath, '..', '..', '..', 'extensions', `vscode-language-pack-${userLocale}`, 'translations', 'main.i18n.json'),
+				join(process.cwd(), 'extensions', `vscode-language-pack-${userLocale}`, 'translations', 'main.i18n.json')
+			];
+			for (const p of candidatePaths) {
+				if (await Promises.exists(p)) {
+					languagePacks[userLocale] = {
+						hash: 'builtin',
+						translations: { 'vscode': p }
+					};
+					resolvedLanguage = userLocale;
+					break;
+				}
+			}
+		}
+
 		if (!resolvedLanguage) {
 			return defaultNLSConfiguration(userLocale, osLocale, nlsMetadataPath);
 		}

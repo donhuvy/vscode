@@ -428,6 +428,9 @@ function createDefaultArgvConfigSync(argvConfigPath: string): void {
 			'//',
 			'// NOTE: Changing this file requires a restart of VS Code.',
 			'{',
+			'	// Configure display language for VS Code.',
+			'	"locale": "vi",',
+			'',
 			'	// Use software rendering instead of hardware accelerated rendering.',
 			'	// This can help in cases where you see rendering issues in VS Code.',
 			'	// "disable-hardware-acceleration": true',
@@ -697,13 +700,13 @@ async function resolveNlsConfiguration(): Promise<INLSConfiguration> {
 	let userLocale = app.getLocale();
 	if (!userLocale) {
 		return {
-			userLocale: 'en',
+			userLocale: 'vi',
 			osLocale,
-			resolvedLanguage: 'en',
+			resolvedLanguage: 'vi',
 			defaultMessagesFile: path.join(import.meta.dirname, 'nls.messages.json'),
 
 			// NLS: below 2 are a relic from old times only used by vscode-nls and deprecated
-			locale: 'en',
+			locale: 'vi',
 			availableLanguages: {}
 		};
 	}
@@ -732,7 +735,11 @@ function getUserDefinedLocale(argvConfig: IArgvConfig): string | undefined {
 		return locale.toLowerCase(); // a directly provided --locale always wins
 	}
 
-	return typeof argvConfig?.locale === 'string' ? argvConfig.locale.toLowerCase() : undefined;
+	if (typeof argvConfig?.locale === 'string') {
+		return argvConfig.locale.toLowerCase();
+	}
+
+	return 'vi';
 }
 
 //#endregion
