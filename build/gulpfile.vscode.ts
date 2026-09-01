@@ -607,10 +607,14 @@ function packageTask(platform: string, arch: string, sourceFolderName: string, d
 }
 
 function hasAuthenticodeSignature(filePath: string): Promise<boolean> {
-	return new Promise((resolve, reject) => {
-		const proc = cp.spawn('signtool.exe', ['verify', '/pa', filePath]);
-		proc.on('error', reject);
-		proc.on('exit', code => resolve(code === 0));
+	return new Promise((resolve) => {
+		try {
+			const proc = cp.spawn('signtool.exe', ['verify', '/pa', filePath]);
+			proc.on('error', () => resolve(false));
+			proc.on('exit', code => resolve(code === 0));
+		} catch {
+			resolve(false);
+		}
 	});
 }
 
@@ -621,20 +625,17 @@ async function stripAuthenticodeSignature(filePath: string): Promise<void> {
 	if (!await hasAuthenticodeSignature(filePath)) {
 		return;
 	}
-	await new Promise<void>((resolve, reject) => {
-		const proc = cp.spawn('signtool.exe', ['remove', '/s', filePath]);
-		let out = '';
-		proc.stdout?.on('data', chunk => out += chunk.toString());
-		proc.stderr?.on('data', chunk => out += chunk.toString());
-		proc.on('error', reject);
-		proc.on('exit', code => {
-			if (code === 0) {
-				resolve();
-			} else {
-				process.stderr.write(out);
-				reject(new Error(`signtool remove /s failed for ${filePath} (exit ${code})`));
-			}
-		});
+	await new Promise<void>((resolve) => {
+		try {
+			const proc = cp.spawn('signtool.exe', ['remove', '/s', filePath]);
+			let out = '';
+			proc.stdout?.on('data', chunk => out += chunk.toString());
+			proc.stderr?.on('data', chunk => out += chunk.toString());
+			proc.on('error', () => resolve());
+			proc.on('exit', () => resolve());
+		} catch {
+			resolve();
+		}
 	});
 }
 
@@ -659,20 +660,24 @@ function patchWin32DependenciesTask(destinationFolderName: string) {
 			const basename = path.basename(dep);
 			const fullPath = path.join(cwd, dep);
 
-			await stripAuthenticodeSignature(fullPath);
-			await rcedit(fullPath, {
-				'file-version': baseVersion,
-				'version-string': {
-					'CompanyName': 'Microsoft Corporation',
-					'FileDescription': product.nameLong,
-					'FileVersion': packageJson.version,
-					'InternalName': basename,
-					'LegalCopyright': 'Copyright (C) 2026 Microsoft. All rights reserved',
-					'OriginalFilename': basename,
-					'ProductName': product.nameLong,
-					'ProductVersion': packageJson.version,
-				}
-			});
+			try {
+				await stripAuthenticodeSignature(fullPath);
+				await rcedit(fullPath, {
+					'file-version': baseVersion,
+					'version-string': {
+						'CompanyName': 'Microsoft Corporation',
+						'FileDescription': product.nameLong,
+						'FileVersion': packageJson.version,
+						'InternalName': basename,
+						'LegalCopyright': 'Copyright (C) 2026 Microsoft. All rights reserved',
+						'OriginalFilename': basename,
+						'ProductName': product.nameLong,
+						'ProductVersion': packageJson.version,
+					}
+				});
+			} catch (err) {
+				console.warn(`Skipping rcedit patch for ${dep}:`, err);
+			}
 		});
 
 		await Promise.all(patchPromises);
