@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup>
+    <SpectreMitigation>false</SpectreMitigation>
+    <CheckMSVCComponents>false</CheckMSVCComponents>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+</Project>
