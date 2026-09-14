@@ -54,3 +54,5 @@ dist
 .v[0-9]*/
 # Local agent validation evidence
 .agent-validation/
+/dist-famabook/110a328ea5
+/dist-famabook/data/user-data
