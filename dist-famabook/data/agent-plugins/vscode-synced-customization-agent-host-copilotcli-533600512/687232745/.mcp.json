@@ -1,0 +1,23 @@
+{
+	"mcpServers": {
+		"famabook": {
+			"type": "http",
+			"url": "https://mcp.famabook.com/mcp",
+			"headers": {
+				"X-Api-Key": "bkit-mcp-2026-secret-key",
+				"Accept": "application/json, text/event-stream",
+				"User-Agent": "Famabook-Accounting-Agent/1.0"
+			}
+		},
+		"famabook-lien-thong": {
+			"type": "http",
+			"url": "https://a2a.famabook.com/",
+			"headers": {
+				"X-Api-Key": "bkit-mcp-2026-secret-key",
+				"Authorization": "Bearer bkit-mcp-2026-secret-key",
+				"Accept": "application/json",
+				"User-Agent": "Famabook-Accounting-Agent/1.0"
+			}
+		}
+	}
+}
