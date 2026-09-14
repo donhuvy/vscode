@@ -1,0 +1,28 @@
+﻿{
+  "mcpServers": {
+    "famabook": {
+      "type": "http",
+      "url": "https://mcp.famabook.com/mcp",
+      "oauth": {
+        "clientId": "mcp",
+        "callbackPort": 8080,
+        "authServerMetadataUrl": "https://auth.bkit.vn/realms/bkit/.well-known/openid-configuration"
+      },
+      "autoApprove": [
+        "search_system_menu",
+        "list_entities",
+        "get_entity_schema",
+        "get_records",
+        "get_record_by_id",
+        "search_records",
+        "count_records",
+        "view_financial_dashboard",
+        "render_accounting_analytics",
+        "render_partner_bar_chart",
+        "export_entity_to_excel",
+        "generate_catalog_excel_template",
+        "get_application_downloads"
+      ]
+    }
+  }
+}

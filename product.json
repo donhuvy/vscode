@@ -103,7 +103,7 @@
 		"provider": {
 			"default": {
 				"id": "bkit",
-				"name": "BKIT Auth"
+				"name": "Tài khoản Famabook"
 			},
 			"github": {
 				"id": "github",
