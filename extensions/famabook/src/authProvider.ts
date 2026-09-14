@@ -75,8 +75,7 @@ export class BkitAuthenticationProvider implements vscode.AuthenticationProvider
 	}
 
 	async createSession(scopes: readonly string[]): Promise<vscode.AuthenticationSession> {
-		const config = vscode.workspace.getConfiguration('famabook');
-		const authUrl = config.get<string>('authUrl', 'https://auth.bkit.vn');
+		const authUrl = process.env.FAMABOOK_AUTH_URL || 'https://auth.bkit.vn';
 		const clientId = 'mcp';
 		const callbackPort = 8080;
 
@@ -195,12 +194,34 @@ export class BkitAuthenticationProvider implements vscode.AuthenticationProvider
 
 							cleanup();
 
+							let accountantName = 'Kế toán viên (famabook.com)';
+							let accountId = 'famabook-accountant';
+							try {
+								const tokenParts = tokenData.access_token.split('.');
+								if (tokenParts.length >= 2) {
+									const payloadJson = Buffer.from(tokenParts[1], 'base64').toString('utf8');
+									const payload = JSON.parse(payloadJson);
+									if (payload.name) {
+										accountantName = `${payload.name} (famabook.com)`;
+									} else if (payload.preferred_username) {
+										accountantName = `${payload.preferred_username} (famabook.com)`;
+									} else if (payload.email) {
+										accountantName = `${payload.email} (famabook.com)`;
+									}
+									if (payload.sub) {
+										accountId = payload.sub;
+									}
+								}
+							} catch {
+								// Giữ nguyên nhãn mặc định
+							}
+
 							const stored: StoredSession = {
 								id: 'famabook-' + Date.now(),
 								accessToken: tokenData.access_token,
 								account: {
-									id: 'famabook-accountant',
-									label: 'Kế toán viên (famabook.com)'
+									id: accountId,
+									label: accountantName
 								},
 								scopes: scopes.length > 0 ? scopes : ['openid', 'profile', 'email']
 							};

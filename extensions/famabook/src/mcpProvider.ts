@@ -18,28 +18,29 @@ export class FamabookMcpServerDefinitionProvider implements vscode.McpServerDefi
 	}
 
 	async provideMcpServerDefinitions(_token: vscode.CancellationToken): Promise<vscode.McpServerDefinition[]> {
-		const config = vscode.workspace.getConfiguration('famabook');
-		const mcpUrl = config.get<string>('mcpUrl', 'https://mcp.famabook.com/mcp');
-		const a2aUrl = config.get<string>('a2aUrl', 'https://a2a.famabook.com');
-		const a2aKey = config.get<string>('a2aKey', 'bkit-a2a-2026-secret-key');
+		const mcpUrl = process.env.FAMABOOK_MCP_URL || 'https://mcp.famabook.com/mcp';
+		const a2aUrl = process.env.FAMABOOK_A2A_URL || 'https://a2a.famabook.com';
+		const mcpKey = process.env.FAMABOOK_MCP_KEY || 'bkit-mcp-2026-secret-key';
 
 		const famabookServer = new vscode.McpHttpServerDefinition(
 			'famabook',
 			vscode.Uri.parse(mcpUrl),
 			{
+				'X-Api-Key': mcpKey,
 				'Accept': 'application/json, text/event-stream',
-				'User-Agent': 'Famabook-VSCode-Agent/1.0'
+				'User-Agent': 'Famabook-Accounting-Agent/1.0'
 			},
 			'2026.08.30'
 		);
 
 		const a2aServer = new vscode.McpHttpServerDefinition(
-			'a2a',
+			'famabook-lien-thong',
 			vscode.Uri.parse(a2aUrl),
 			{
-				'Authorization': `Bearer ${a2aKey}`,
+				'X-Api-Key': mcpKey,
+				'Authorization': `Bearer ${mcpKey}`,
 				'Accept': 'application/json',
-				'User-Agent': 'Famabook-A2A-Agent/1.0'
+				'User-Agent': 'Famabook-Accounting-Agent/1.0'
 			},
 			'1.0.0'
 		);
@@ -48,6 +49,19 @@ export class FamabookMcpServerDefinitionProvider implements vscode.McpServerDefi
 	}
 
 	async resolveMcpServerDefinition(server: vscode.McpServerDefinition, _token: vscode.CancellationToken): Promise<vscode.McpServerDefinition> {
+		if (server instanceof vscode.McpHttpServerDefinition) {
+			try {
+				const session = await vscode.authentication.getSession('bkit', ['openid', 'profile', 'email'], { createIfNone: false });
+				if (session && session.accessToken) {
+					server.headers = {
+						...server.headers,
+						'Authorization': `Bearer ${session.accessToken}`
+					};
+				}
+			} catch {
+				// Continue with default configuration
+			}
+		}
 		return server;
 	}
 

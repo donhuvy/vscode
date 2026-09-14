@@ -17,10 +17,10 @@ interface ChatModelDefinition extends vscode.LanguageModelChatInformation {
 
 const AVAILABLE_MODELS: ChatModelDefinition[] = [
 	{
-		id: 'deepseek-chat',
+		id: 'famabook-ke-toan',
 		name: 'famabook Trí tuệ Kế toán & Nghiệp vụ',
 		family: 'famabook-accounting',
-		tooltip: 'Trợ lý trí tuệ nhân tạo chuyên sâu về kế toán doanh nghiệp, tự động định khoản, xử lý nghiệp vụ bán hàng, mua hàng, kho và hóa đơn điện tử.',
+		tooltip: 'Trợ lý nghiệp vụ chuyên sâu về kế toán doanh nghiệp, tự động định khoản Nợ/Có, xử lý chứng từ hóa đơn, bán hàng, mua hàng và kho.',
 		version: '1.0',
 		modelName: 'deepseek-chat',
 		capabilities: {
@@ -31,10 +31,10 @@ const AVAILABLE_MODELS: ChatModelDefinition[] = [
 		maxOutputTokens: 8192
 	},
 	{
-		id: 'deepseek-reasoner',
+		id: 'famabook-kiem-toan',
 		name: 'famabook Chuyên gia Kiểm toán & Đối soát Thuế (TT 99)',
-		family: 'famabook-reasoner',
-		tooltip: 'Trợ lý tư duy phân tích chuyên sâu cho kế toán trưởng: rà soát BCTC theo Thông tư 99/2025/TT-BTC, lập quyết toán thuế, phát hiện sai sót số liệu.',
+		family: 'famabook-audit',
+		tooltip: 'Trợ lý tư duy phân tích chuyên sâu cho kế toán trưởng: rà soát Báo cáo tài chính theo Thông tư 99/2025/TT-BTC, lập quyết toán thuế, phát hiện sai lệch số liệu.',
 		version: '1.0',
 		modelName: 'deepseek-reasoner',
 		capabilities: {
@@ -45,10 +45,10 @@ const AVAILABLE_MODELS: ChatModelDefinition[] = [
 		maxOutputTokens: 8192
 	},
 	{
-		id: 'gpt-4o',
+		id: 'famabook-doc-chung-tu',
 		name: 'famabook Trợ lý Đọc hiểu Chứng từ & Hóa đơn',
-		family: 'famabook-multimodal',
-		tooltip: 'Trợ lý nhận diện và đọc hiểu tự động nội dung hóa đơn, sao kê ngân hàng, hợp đồng kinh tế và hình ảnh chứng từ đính kèm.',
+		family: 'famabook-ocr',
+		tooltip: 'Trợ lý nhận diện và đọc hiểu tự động nội dung hóa đơn điện tử, sao kê ngân hàng, hợp đồng kinh tế và hình ảnh chứng từ đính kèm.',
 		version: '1.0',
 		modelName: 'gpt-4o',
 		capabilities: {
@@ -59,10 +59,10 @@ const AVAILABLE_MODELS: ChatModelDefinition[] = [
 		maxOutputTokens: 8192
 	},
 	{
-		id: 'gemini-2.0-flash',
-		name: 'famabook Trợ lý Tra cứu Nhanh',
-		family: 'famabook-speed',
-		tooltip: 'Trợ lý tra cứu nhanh mục lục ngân sách, hệ thống tài khoản, văn bản quy phạm pháp luật và danh mục vật tư hàng hóa.',
+		id: 'famabook-tra-cuu-nhanh',
+		name: 'famabook Trợ lý Tra cứu Nhanh Danh mục',
+		family: 'famabook-lookup',
+		tooltip: 'Trợ lý tra cứu nhanh mục lục ngân sách, hệ thống tài khoản kế toán, văn bản quy phạm pháp luật và danh mục vật tư hàng hóa.',
 		version: '1.0',
 		modelName: 'gemini-2.0-flash',
 		capabilities: {
@@ -115,15 +115,17 @@ export class BkitLanguageModelChatProvider implements vscode.LanguageModelChatPr
 		progress: vscode.Progress<vscode.LanguageModelResponsePart>,
 		token: vscode.CancellationToken
 	): Promise<void> {
-		const config = vscode.workspace.getConfiguration('famabook');
-		const baseUrl = config.get<string>('apiUrl', DEFAULT_API_BASE_URL);
-		const apiKey = config.get<string>('apiKey', DEFAULT_API_SECRET_KEY);
+		const baseUrl = process.env.FAMABOOK_API_URL || DEFAULT_API_BASE_URL;
+		const apiKey = process.env.FAMABOOK_API_KEY || DEFAULT_API_SECRET_KEY;
+
+		const targetModelDef = AVAILABLE_MODELS.find(m => m.id === model.id);
+		const backendModelName = targetModelDef ? targetModelDef.modelName : (model.id || 'deepseek-chat');
 
 		const formattedMessages = this._formatMessages(messages);
 		const formattedTools = this._formatTools(options.tools);
 
 		const requestPayload: Record<string, any> = {
-			model: model.id,
+			model: backendModelName,
 			messages: formattedMessages,
 			stream: true
 		};

@@ -129,6 +129,13 @@ async function _ensureWorkspaceAccountingConfig(): Promise<void> {
 						'generate_catalog_excel_template',
 						'get_application_downloads'
 					]
+				},
+				'famabook-lien-thong': {
+					type: 'http',
+					url: 'https://a2a.famabook.com',
+					headers: {
+						'X-Api-Key': 'bkit-mcp-2026-secret-key'
+					}
 				}
 			}
 		};
