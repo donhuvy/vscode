@@ -21,48 +21,56 @@ const AVAILABLE_MODELS: ChatModelDefinition[] = [
 		name: 'famabook Trí tuệ Kế toán & Nghiệp vụ',
 		family: 'famabook-accounting',
 		tooltip: 'Trợ lý trí tuệ nhân tạo chuyên sâu về kế toán doanh nghiệp, tự động định khoản, xử lý nghiệp vụ bán hàng, mua hàng, kho và hóa đơn điện tử.',
+		version: '1.0',
 		modelName: 'deepseek-chat',
 		capabilities: {
 			toolCalling: true,
 			imageInput: false
 		},
-		maxInputTokens: 64000
+		maxInputTokens: 64000,
+		maxOutputTokens: 8192
 	},
 	{
 		id: 'deepseek-reasoner',
 		name: 'famabook Chuyên gia Kiểm toán & Đối soát Thuế (TT 99)',
 		family: 'famabook-reasoner',
 		tooltip: 'Trợ lý tư duy phân tích chuyên sâu cho kế toán trưởng: rà soát BCTC theo Thông tư 99/2025/TT-BTC, lập quyết toán thuế, phát hiện sai sót số liệu.',
+		version: '1.0',
 		modelName: 'deepseek-reasoner',
 		capabilities: {
 			toolCalling: true,
 			imageInput: false
 		},
-		maxInputTokens: 64000
+		maxInputTokens: 64000,
+		maxOutputTokens: 8192
 	},
 	{
 		id: 'gpt-4o',
 		name: 'famabook Trợ lý Đọc hiểu Chứng từ & Hóa đơn',
 		family: 'famabook-multimodal',
 		tooltip: 'Trợ lý nhận diện và đọc hiểu tự động nội dung hóa đơn, sao kê ngân hàng, hợp đồng kinh tế và hình ảnh chứng từ đính kèm.',
+		version: '1.0',
 		modelName: 'gpt-4o',
 		capabilities: {
 			toolCalling: true,
 			imageInput: true
 		},
-		maxInputTokens: 128000
+		maxInputTokens: 128000,
+		maxOutputTokens: 8192
 	},
 	{
 		id: 'gemini-2.0-flash',
 		name: 'famabook Trợ lý Tra cứu Nhanh',
 		family: 'famabook-speed',
 		tooltip: 'Trợ lý tra cứu nhanh mục lục ngân sách, hệ thống tài khoản, văn bản quy phạm pháp luật và danh mục vật tư hàng hóa.',
+		version: '1.0',
 		modelName: 'gemini-2.0-flash',
 		capabilities: {
 			toolCalling: true,
 			imageInput: true
 		},
-		maxInputTokens: 128000
+		maxInputTokens: 128000,
+		maxOutputTokens: 8192
 	}
 ];
 

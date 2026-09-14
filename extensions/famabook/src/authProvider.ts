@@ -8,7 +8,7 @@ import * as http from 'http';
 import * as url from 'url';
 
 export const AUTH_PROVIDER_ID = 'bkit';
-export const AUTH_PROVIDER_NAME = 'BKIT Auth';
+export const AUTH_PROVIDER_NAME = 'Tài khoản famabook.com';
 const SECRET_KEY_SESSIONS = 'famabook.bkit.sessions';
 
 interface StoredSession {
@@ -134,7 +134,7 @@ export class BkitAuthenticationProvider implements vscode.AuthenticationProvider
 
 			timeoutTimer = setTimeout(() => {
 				cleanup();
-				reject(new Error('BKIT authentication timed out (120s).'));
+				reject(new Error('Thời gian đăng nhập famabook.com đã hết hạn (120 giây). Vui lòng thử lại.'));
 			}, 120000);
 
 			server = http.createServer(async (req, res) => {
@@ -148,7 +148,7 @@ export class BkitAuthenticationProvider implements vscode.AuthenticationProvider
 							res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' });
 							res.end('<h3>Xác thực không thành công. Vui lòng thử lại.</h3>');
 							cleanup();
-							reject(new Error('Invalid OAuth response or state mismatch.'));
+							reject(new Error('Mã phản hồi xác thực không hợp lệ.'));
 							return;
 						}
 
@@ -168,8 +168,7 @@ export class BkitAuthenticationProvider implements vscode.AuthenticationProvider
 							});
 
 							if (!tokenRes.ok) {
-								const errText = await tokenRes.text();
-								throw new Error(`Token request failed: ${tokenRes.status} ${errText}`);
+								throw new Error(`Đăng nhập không thành công: ${tokenRes.status}`);
 							}
 
 							const tokenData = await tokenRes.json() as { access_token: string; id_token?: string; refresh_token?: string };
@@ -178,7 +177,7 @@ export class BkitAuthenticationProvider implements vscode.AuthenticationProvider
 							res.end(`
 								<!DOCTYPE html>
 								<html>
-								<head><meta charset="utf-8"><title>famabook.com Đăng nhập thành công</title>
+								<head><meta charset="utf-8"><title>famabook.com - Đăng nhập thành công</title>
 								<style>
 									body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f0fdf4; color: #166534; }
 									.card { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); text-align: center; }
@@ -187,8 +186,8 @@ export class BkitAuthenticationProvider implements vscode.AuthenticationProvider
 								</head>
 								<body>
 									<div class="card">
-										<h1>Đăng nhập BKIT / famabook.com thành công!</h1>
-										<p>Bạn có thể đóng tab này và quay lại Visual Studio Code Agents.</p>
+										<h1>Đăng nhập famabook.com thành công!</h1>
+										<p>Kế toán viên có thể đóng tab này và bắt đầu làm việc ngay.</p>
 									</div>
 								</body>
 								</html>
@@ -197,10 +196,10 @@ export class BkitAuthenticationProvider implements vscode.AuthenticationProvider
 							cleanup();
 
 							const stored: StoredSession = {
-								id: 'bkit-' + Date.now(),
+								id: 'famabook-' + Date.now(),
 								accessToken: tokenData.access_token,
 								account: {
-									id: 'bkit-user',
+									id: 'famabook-accountant',
 									label: 'Kế toán viên (famabook.com)'
 								},
 								scopes: scopes.length > 0 ? scopes : ['openid', 'profile', 'email']
@@ -209,7 +208,7 @@ export class BkitAuthenticationProvider implements vscode.AuthenticationProvider
 							resolve(stored);
 						} catch (tokenErr: any) {
 							res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
-							res.end(`<h3>Lỗi trao đổi token: ${tokenErr.message}</h3>`);
+							res.end(`<h3>Lỗi đăng nhập: ${tokenErr.message}</h3>`);
 							cleanup();
 							reject(tokenErr);
 						}
@@ -228,22 +227,22 @@ export class BkitAuthenticationProvider implements vscode.AuthenticationProvider
 				cleanup();
 				// Fallback to manual token entry if port is in use
 				vscode.window.showInputBox({
-					prompt: 'Không thể mở cổng 8080 cho OAuth callback. Bạn có thể dán Access Token BKIT trực tiếp tại đây:',
+					prompt: 'Không thể mở cổng tiếp nhận đăng nhập tự động. Kế toán viên có thể dán Mã truy cập famabook.com trực tiếp tại đây:',
 					password: true,
 					ignoreFocusOut: true
 				}).then(token => {
 					if (token && token.trim()) {
 						resolve({
-							id: 'bkit-' + Date.now(),
+							id: 'famabook-' + Date.now(),
 							accessToken: token.trim(),
 							account: {
-								id: 'bkit-user',
-								label: 'Kế toán viên BKIT'
+								id: 'famabook-accountant',
+								label: 'Kế toán viên (famabook.com)'
 							},
 							scopes: scopes
 						});
 					} else {
-						reject(new Error(`Failed to start loopback server on port ${port}: ${e.message}`));
+						reject(new Error(`Không thể khởi tạo cổng đăng nhập: ${e.message}`));
 					}
 				});
 			});

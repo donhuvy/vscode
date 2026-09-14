@@ -128,17 +128,19 @@ export function registerFamabookTools(context: vscode.ExtensionContext): void {
 
 					case 'balance_sheet_validation':
 						auditReport = `
-### KẾT QUẢ KIỂM TRA BẢNG CÂN ĐỐI KẾ TOÁN (MẪU B01-DN)
+### KẾT QUẢ KIỂM TRA BẢNG CÂN ĐỐI KẾ TOÁN (MẪU B01-DN) THEO THÔNG TƯ 99/2025/TT-BTC
 1. **Cân đối Tổng thể:**
-   - **TỔNG TÀI SẢN (Mã số 270) = TỔNG NGUỒN VỐN (Mã số 440)**: [HỢP LỆ - CÂN ĐỐI KHỚP]
+   - **TỔNG CỘNG TÀI SẢN (Mã số 280) = TỔNG CỘNG NGUỒN VỐN (Mã số 440)**: [HỢP LỆ - CÂN ĐỐI KHỚP]
 2. **Kiểm tra tài sản:**
+   - Tài sản ngắn hạn (Mã 100 = 110 + 120 + 130 + 140 + 150 + 160): Hợp lệ.
    - Tiền và tương đương tiền (Mã 110) = Dư Nợ TK 111 + TK 112: Hợp lệ.
    - Các khoản phải thu ngắn hạn (Mã 130) = Tổng số dư Nợ chi tiết TK 131: Hợp lệ.
    - Hàng tồn kho (Mã 140) = Dư Nợ TK 151, 152, 153, 154, 155, 156, 157 trừ Dự phòng giảm giá (TK 2294): Hợp lệ.
+   - Tài sản dài hạn (Mã 200 = 210 + 220 + 230 + 240 + 250 + 260 + 270): Hợp lệ.
 3. **Kiểm tra nguồn vốn:**
    - Nợ phải trả (Mã 300) = Nợ ngắn hạn (Mã 310) + Nợ dài hạn (Mã 330): Hợp lệ.
    - Vốn chủ sở hữu (Mã 400) = Vốn góp (Mã 411) + Lợi nhuận sau thuế chưa phân phối (Mã 421): Hợp lệ.
-4. **Tương thích phần mềm HTKK:** Đạt tiêu chuẩn liên thông XML báo cáo tài chính của Tổng cục Thuế.
+4. **Tương thích phần mềm HTKK (Sheet Header!B22 & XSD 99_BCTC_305):** Đạt tiêu chuẩn liên thông XML báo cáo tài chính của Tổng cục Thuế.
 						`.trim();
 						break;
 

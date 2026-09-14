@@ -1,8 +1,8 @@
 {
-	"name": "Code - OSS",
-	"short_name": "Code- OSS",
+	"name": "famabook.com - Phần mềm Kế toán & Trợ lý Thông minh",
+	"short_name": "Famabook",
 	"start_url": "/",
-	"lang": "en-US",
+	"lang": "vi-VN",
 	"display": "standalone",
 	"display_override": ["window-controls-overlay"],
 	"icons": [
