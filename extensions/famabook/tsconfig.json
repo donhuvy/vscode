@@ -4,6 +4,7 @@
 		"rootDir": "./src",
 		"outDir": "./out",
 		"typeRoots": [
+			"../../node_modules/@types",
 			"E:/source_code/acc10/frontend/node_modules/@types"
 		],
 		"types": [
