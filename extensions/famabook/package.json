@@ -52,13 +52,32 @@
         "label": "Hệ thống Dữ liệu Kế toán famabook"
       }
     ],
+    "chatParticipants": [
+      {
+        "id": "famabook.agent",
+        "name": "f",
+        "fullName": "famabook",
+        "description": "Tác nhân Kế toán Doanh nghiệp famabook.com (/f)",
+        "isDefault": true,
+        "commands": [
+          {
+            "name": "f",
+            "description": "Lệnh điều khiển Tác nhân Kế toán famabook (/f)"
+          },
+          {
+            "name": "uom-convert",
+            "description": "Quản lý Luật chuyển đổi Đơn vị tính (/f hoặc /uom-convert)"
+          }
+        ]
+      }
+    ],
     "languageModelTools": [
       {
         "name": "famabook_navigate",
         "displayName": "Chuyển tới phân hệ kế toán",
         "toolReferenceName": "famabook_navigate",
         "canBeReferencedInPrompt": true,
-        "modelDescription": "Tự động điều hướng tức thời màn hình kế toán famabook.com đến phân hệ mong muốn: /dashboard (Tổng quan tài chính), /dashboard/hoadon30s (Hóa đơn điện tử 30s), /dashboard/sales-contract (Hợp đồng bán hàng), /dashboard/arinvoices (Hóa đơn bán hàng), /dashboard/purchase-invoice (Hóa đơn mua hàng), /dashboard/purchase-order (Đơn mua hàng), /dashboard/warehouse (Kho hàng), /dashboard/goods (Vật tư hàng hóa), /dashboard/accounting-account (Hệ thống tài khoản TT 99), /dashboard/dinh-khoan (Định khoản), /dashboard/nhat-ky-chung (Sổ nhật ký chung), /dashboard/financial-reports (Báo cáo tài chính).",
+        "modelDescription": "Tự động điều hướng tức thời màn hình kế toán famabook.com đến phân hệ mong muốn: /dashboard/uom-convert (Danh sách Luật chuyển đổi đơn vị tính), /dashboard/uom-convert/new (Thêm mới Luật chuyển đổi đơn vị tính), /dashboard (Tổng quan tài chính), /dashboard/hoadon30s (Hóa đơn điện tử 30s), /dashboard/sales-contract (Hợp đồng bán hàng), /dashboard/arinvoices (Hóa đơn bán hàng), /dashboard/purchase-invoice (Hóa đơn mua hàng), /dashboard/purchase-order (Đơn mua hàng), /dashboard/warehouse (Kho hàng), /dashboard/goods (Vật tư hàng hóa), /dashboard/accounting-account (Hệ thống tài khoản TT 99), /dashboard/dinh-khoan (Định khoản), /dashboard/nhat-ky-chung (Sổ nhật ký chung), /dashboard/financial-reports (Báo cáo tài chính).",
         "userDescription": "Chuyển tới phân hệ kế toán trên famabook.com",
         "inputSchema": {
           "type": "object",
@@ -163,6 +182,57 @@
           },
           "required": [
             "toolName"
+          ]
+        }
+      },
+      {
+        "name": "famabook_uom_convert",
+        "displayName": "Quản lý Luật chuyển đổi Đơn vị tính",
+        "toolReferenceName": "famabook_uom_convert",
+        "canBeReferencedInPrompt": true,
+        "modelDescription": "Tự động quản lý Luật chuyển đổi Đơn vị tính trên famabook.com theo đặc tả /f: Danh sách (list), Thêm mới (create), Xem chi tiết (get), Sửa (update), Xóa có bảo vệ luật hệ thống và đối soát số lượng (delete). Hỗ trợ chuyển đổi giữa các đơn vị như bao sang kg, tấn sang kg, thùng sang lon/hộp...",
+        "userDescription": "Quản lý Luật chuyển đổi đơn vị tính famabook.com",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "list",
+                "create",
+                "get",
+                "update",
+                "delete"
+              ],
+              "description": "Thao tác quản lý luật chuyển đổi: list (danh sách), create (thêm mới), get (xem chi tiết), update (sửa), delete (xóa an toàn)"
+            },
+            "fromUom": {
+              "type": "string",
+              "description": "Đơn vị nguồn (ví dụ: 'bao', 'Bao tải', 'tan', 'kg')"
+            },
+            "toUom": {
+              "type": "string",
+              "description": "Đơn vị đích / tính (ví dụ: 'kg', 'kilogam', 'g')"
+            },
+            "numerator": {
+              "type": "number",
+              "description": "Tử số quy đổi (mặc định: 1)"
+            },
+            "denominator": {
+              "type": "number",
+              "description": "Mẫu số quy đổi (ví dụ: 50, 40)"
+            },
+            "id": {
+              "type": "string",
+              "description": "Mã ID của luật chuyển đổi (nếu có)"
+            },
+            "keyword": {
+              "type": "string",
+              "description": "Từ khóa tìm kiếm (khi dùng action list)"
+            }
+          },
+          "required": [
+            "action"
           ]
         }
       }

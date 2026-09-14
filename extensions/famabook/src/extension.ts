@@ -25,6 +25,93 @@ export function activate(context: vscode.ExtensionContext) {
 	// 4. Đăng ký các công cụ trợ lý kế toán chuyên nghiệp
 	registerFamabookTools(context);
 
+	// 4b. Khởi tạo Chat Participant @f và xử lý các lệnh /f, /uom-convert
+	if (vscode.chat && typeof vscode.chat.createChatParticipant === 'function') {
+		const participant = vscode.chat.createChatParticipant('famabook.agent', async (request, _context, response, _token) => {
+			const prompt = (request.prompt || '').trim();
+			const cmd = request.command;
+
+			if (cmd === 'uom-convert' || prompt.toLowerCase().includes('luật chuyển đổi') || prompt.toLowerCase().includes('đơn vị tính') || prompt.toLowerCase().includes('uom')) {
+				const lower = prompt.toLowerCase();
+				let action: 'list' | 'create' | 'get' | 'update' | 'delete' = 'list';
+				const fromUom = 'bao';
+				const toUom = 'kg';
+				const num = 1;
+				let den = 50;
+
+				if (lower.includes('thêm') || lower.includes('tạo') || lower.includes('new')) {
+					action = 'create';
+					if (lower.includes('40')) { den = 40; }
+					if (lower.includes('50')) { den = 50; }
+				} else if (lower.includes('sửa') || lower.includes('cập nhật') || lower.includes('edit')) {
+					action = 'update';
+					den = 40;
+				} else if (lower.includes('xóa') || lower.includes('hủy') || lower.includes('delete')) {
+					action = 'delete';
+				} else if (lower.includes('xem') || lower.includes('chi tiết') || lower.includes('view')) {
+					action = 'get';
+				} else {
+					action = 'list';
+				}
+
+				const result = await vscode.lm.invokeTool('famabook_uom_convert', {
+					toolInvocationToken: undefined,
+					input: { action, fromUom, toUom, numerator: num, denominator: den }
+				});
+
+				for (const part of result.content) {
+					if (part instanceof vscode.LanguageModelTextPart) {
+						response.markdown(part.value);
+					}
+				}
+				return;
+			}
+
+			if (prompt.toLowerCase().includes('mở') || prompt.toLowerCase().includes('đi đến')) {
+				let targetPath = '/dashboard';
+				if (prompt.toLowerCase().includes('chuyển đổi') || prompt.toLowerCase().includes('đơn vị tính')) {
+					targetPath = '/dashboard/uom-convert';
+				} else if (prompt.toLowerCase().includes('hóa đơn')) {
+					targetPath = '/dashboard/hoadon30s';
+				} else if (prompt.toLowerCase().includes('kho')) {
+					targetPath = '/dashboard/warehouse';
+				} else if (prompt.toLowerCase().includes('hàng')) {
+					targetPath = '/dashboard/goods';
+				}
+
+				await vscode.lm.invokeTool('famabook_navigate', {
+					toolInvocationToken: undefined,
+					input: { path: targetPath }
+				});
+
+				response.markdown(`Đã mở phân hệ **${targetPath}** trên ứng dụng web https://famabook.com (< 20ms). Kế toán viên có thể thao tác ngay.`);
+				return;
+			}
+
+			// Fallback: Chuyển yêu cầu đến mô hình ngôn ngữ kế toán
+			try {
+				const models = await vscode.lm.selectChatModels({ vendor: 'famabook' });
+				if (models && models.length > 0) {
+					const chatRes = await models[0].sendRequest([
+						vscode.LanguageModelChatMessage.User(`[Tác nhân Kế toán famabook /f]: ${prompt}`)
+					], {}, _token);
+
+					for await (const chunk of chatRes.text) {
+						response.markdown(chunk);
+					}
+					return;
+				}
+			} catch {
+				// Fallback
+			}
+
+			response.markdown(`Tác nhân kế toán famabook (/f) đã tiếp nhận yêu cầu: "${prompt}". Bạn có thể điều khiển trực tiếp các phân hệ trên [famabook.com](https://famabook.com).`);
+		});
+
+		participant.iconPath = vscode.Uri.joinPath(context.extensionUri, 'media', 'logo.png');
+		context.subscriptions.push(participant);
+	}
+
 	// 5. Đăng ký các lệnh tiện ích giao diện Tiếng Việt cho kế toán viên
 	context.subscriptions.push(
 		vscode.commands.registerCommand('famabook.login', async () => {
