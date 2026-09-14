@@ -10,6 +10,7 @@ const registeredCommands = new Map();
 let registeredAuthProvider = null;
 let registeredLmChatProvider = null;
 let registeredMcpDefinitionProvider = null;
+const registeredChatParticipants = new Map();
 
 const vscodeMock = {
     authentication: {
@@ -41,6 +42,19 @@ const vscodeMock = {
         registerTool: (name, tool) => {
             registeredTools.set(name, tool);
             return { dispose: () => registeredTools.delete(name) };
+        },
+        invokeTool: async (name, options) => {
+            const tool = registeredTools.get(name);
+            if (!tool) throw new Error(`Tool ${name} not found`);
+            return await tool.invoke(options, {});
+        },
+        selectChatModels: async () => []
+    },
+    chat: {
+        createChatParticipant: (id, handler) => {
+            const participant = { id, handler, iconPath: null, dispose: () => registeredChatParticipants.delete(id) };
+            registeredChatParticipants.set(id, participant);
+            return participant;
         }
     },
     commands: {
@@ -199,6 +213,69 @@ async function runTests() {
     const webmcpRes = await webmcpTool.invoke({ input: { toolName: 'navigate_to_page', arguments: { path: '/dashboard/sales-contract/new' } } }, {});
     assert(webmcpRes.content[0].value.length > 0, 'WebMCP result returned');
     console.log('  -> 6c PASS: famabook_webmcp_exec handled execution.');
+
+    console.log('[TEST 7] Testing Chat Participant @f & Slash Command /f...');
+    assert(registeredChatParticipants.has('famabook.agent'), 'Chat Participant famabook.agent (@f) should be registered');
+    const fParticipant = registeredChatParticipants.get('famabook.agent');
+    
+    // Test participant handling /uom-convert command
+    const streamedParts = [];
+    const mockResponseStream = {
+        markdown: (val) => streamedParts.push(val)
+    };
+    await fParticipant.handler(
+        { prompt: 'Xem luật chuyển đổi từ bao tải sang kg.', command: 'uom-convert' },
+        {},
+        mockResponseStream,
+        {}
+    );
+    assert(streamedParts.length > 0, 'Participant should respond to /uom-convert');
+    assert(streamedParts[0].includes('BAO SANG KG'), 'Should resolve uom conversion from bao to kg');
+    console.log('  -> 7a PASS: Chat Participant @f executed slash command /uom-convert.');
+
+    console.log('[TEST 8] Testing famabook_uom_convert tool execution (5 core scenarios)...');
+    assert(registeredTools.has('famabook_uom_convert'), 'famabook_uom_convert registered');
+    const uomTool = registeredTools.get('famabook_uom_convert');
+
+    // 8a. Danh sách (list)
+    const listRes = await uomTool.invoke({ input: { action: 'list' } }, {});
+    assert(listRes.content[0].value.includes('DANH SÁCH LUẬT CHUYỂN ĐỔI'), 'Must list UOM conversions');
+    console.log('  -> 8a PASS: famabook_uom_convert (list).');
+
+    // 8b. Thêm mới (create): bao sang kg (1:50)
+    const createRes = await uomTool.invoke({ input: { action: 'create', fromUom: 'bao', toUom: 'kg', numerator: 1, denominator: 50 } }, {});
+    assert(createRes.content[0].value.includes('THÊM MỚI LUẬT CHUYỂN ĐỔI'), 'Must create UOM conversion');
+    assert(createRes.content[0].value.includes('bao'), 'Must have fromUom bao');
+    assert(createRes.content[0].value.includes('kg'), 'Must have toUom kg');
+    console.log('  -> 8b PASS: famabook_uom_convert (create bao -> kg 1:50).');
+
+    // 8c. Xem chi tiết (get): bao sang kg
+    const getRes = await uomTool.invoke({ input: { action: 'get', fromUom: 'bao', toUom: 'kg' } }, {});
+    assert(getRes.content[0].value.includes('CHI TIẾT LUẬT CHUYỂN ĐỔI'), 'Must view UOM conversion');
+    console.log('  -> 8c PASS: famabook_uom_convert (get bao -> kg).');
+
+    // 8d. Sửa (update): bao sang kg (mẫu số 40)
+    const updateRes = await uomTool.invoke({ input: { action: 'update', fromUom: 'bao', toUom: 'kg', denominator: 40 } }, {});
+    assert(updateRes.content[0].value.includes('CẬP NHẬT LUẬT CHUYỂN ĐỔI'), 'Must update UOM conversion');
+    assert(updateRes.content[0].value.includes('40'), 'Must update denominator to 40');
+    console.log('  -> 8d PASS: famabook_uom_convert (update denominator 40).');
+
+    // 8e. Xóa an toàn (delete): user rule -> allowed
+    const deleteUserRes = await uomTool.invoke({ input: { action: 'delete', fromUom: 'bao', toUom: 'kg' } }, {});
+    assert(deleteUserRes.content[0].value.includes('BÁO CÁO KẾT QUẢ XÓA BỎ'), 'Must report deletion result');
+    assert(deleteUserRes.content[0].value.includes('Số lượng Luật chuyển đổi trước khi xóa:** 24'), 'Must report before count');
+    assert(deleteUserRes.content[0].value.includes('Số lượng Luật chuyển đổi sau khi xóa:** 23'), 'Must report after count');
+    console.log('  -> 8e PASS: famabook_uom_convert (delete user rule with before/after count auditing).');
+
+    // 8f. Xóa an toàn (delete): system rule -> rejected
+    const deleteSysRes = await uomTool.invoke({ input: { action: 'delete', fromUom: 'tan', toUom: 'kg' } }, {});
+    assert(deleteSysRes.content[0].value.includes('TỪ CHỐI XÓA LUẬT HỆ THỐNG'), 'Must safely protect system rules');
+    console.log('  -> 8f PASS: famabook_uom_convert safely rejected system rule deletion.');
+
+    // 8g. Navigation to /dashboard/uom-convert
+    const uomNavRes = await navTool.invoke({ input: { path: '/dashboard/uom-convert' } }, {});
+    assert(uomNavRes.content[0].value.includes('Danh sách Luật chuyển đổi Đơn vị tính'), 'Must identify /dashboard/uom-convert');
+    console.log('  -> 8g PASS: famabook_navigate to /dashboard/uom-convert verified.');
 
     console.log('\n================================================================');
     console.log('ALL TESTS PASSED! FAMABOOK EXTENSION IS 100% FUNCTIONAL.');

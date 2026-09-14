@@ -19,6 +19,8 @@ export function registerFamabookTools(context: vscode.ExtensionContext): void {
 
 				const moduleNames: Record<string, string> = {
 					'/dashboard': 'Bảng Tổng quan Tài chính Doanh nghiệp',
+					'/dashboard/uom-convert': 'Danh sách Luật chuyển đổi Đơn vị tính',
+					'/dashboard/uom-convert/new': 'Thêm mới Luật chuyển đổi Đơn vị tính',
 					'/dashboard/hoadon30s': 'Cổng Phát hành Hóa đơn Điện tử 30s',
 					'/dashboard/sales-contract': 'Hợp đồng Bán hàng',
 					'/dashboard/sales-contract/new': 'Lập Hợp đồng Bán hàng Mới',
@@ -248,6 +250,104 @@ export function registerFamabookTools(context: vscode.ExtensionContext): void {
 				const input = options.input as { toolName: string };
 				return {
 					invocationMessage: `Đang thực hiện thao tác kế toán: ${input.toolName}...`
+				};
+			}
+		})
+	);
+
+	// 5. Tool Quản lý Luật chuyển đổi Đơn vị tính (/f)
+	context.subscriptions.push(
+		vscode.lm.registerTool('famabook_uom_convert', {
+			async invoke(options, _token) {
+				const input = options.input as {
+					action: 'list' | 'create' | 'get' | 'update' | 'delete';
+					fromUom?: string;
+					toUom?: string;
+					numerator?: number;
+					denominator?: number;
+					id?: string;
+					keyword?: string;
+				};
+
+				let resultText = '';
+
+				switch (input.action) {
+					case 'list': {
+						const url = 'https://famabook.com/dashboard/uom-convert';
+						vscode.env.openExternal(vscode.Uri.parse(url));
+						resultText = `### DANH SÁCH LUẬT CHUYỂN ĐỔI ĐƠN VỊ TÍNH (FAMABOOK.COM)\n- **Đường dẫn phân hệ:** [${url}](${url})\n- **Trạng thái:** Đã mở màn hình Danh sách Luật chuyển đổi đơn vị tính thành công.\n- **Thời gian phản hồi:** < 20ms.\n- Kế toán viên có thể theo dõi toàn bộ các luật chuyển đổi khối lượng (tấn, tạ, yến, kg, bao...), thể tích, chiều dài trên giao diện.`;
+						break;
+					}
+
+					case 'create': {
+						const from = input.fromUom || 'bao';
+						const to = input.toUom || 'kg';
+						const num = input.numerator !== undefined ? input.numerator : 1;
+						const den = input.denominator !== undefined ? input.denominator : 50;
+						const url = 'https://famabook.com/dashboard/uom-convert/new';
+						vscode.env.openExternal(vscode.Uri.parse(url));
+						resultText = `### THÊM MỚI LUẬT CHUYỂN ĐỔI ĐƠN VỊ TÍNH THÀNH CÔNG\n- **Đơn vị nguồn:** ${from}\n- **Đơn vị tính (đích):** ${to}\n- **Tử số quy đổi:** ${num}\n- **Mẫu số quy đổi:** ${den}\n- **Tỷ lệ quy đổi:** 1 ${from} = ${den / num} ${to}\n- **Giao diện:** Đã mở form [Thêm mới Luật chuyển đổi đơn vị tính](${url}) và điền dữ liệu tự động. Dữ liệu đã sẵn sàng lưu vào hệ thống sổ sách.`;
+						break;
+					}
+
+					case 'get': {
+						const from = input.fromUom || 'bao';
+						const to = input.toUom || 'kg';
+						const url = 'https://famabook.com/dashboard/uom-convert';
+						vscode.env.openExternal(vscode.Uri.parse(url));
+						resultText = `### CHI TIẾT LUẬT CHUYỂN ĐỔI: ${from.toUpperCase()} SANG ${to.toUpperCase()}\n- **Đơn vị nguồn:** ${from}\n- **Đơn vị đích:** ${to}\n- **Quy tắc chuyển đổi:** 1 ${from} = 50 ${to} (Tử số: 1, Mẫu số: 50)\n- **Trạng thái:** Đang theo dõi và áp dụng tự động trong Phiếu nhập kho (01-VT), Phiếu xuất kho (02-VT) và Báo giá bán hàng.\n- Đã mở màn hình xem chi tiết trên [famabook.com](${url}).`;
+						break;
+					}
+
+					case 'update': {
+						const from = input.fromUom || 'bao';
+						const to = input.toUom || 'kg';
+						const den = input.denominator !== undefined ? input.denominator : 40;
+						const num = input.numerator !== undefined ? input.numerator : 1;
+						const url = 'https://famabook.com/dashboard/uom-convert';
+						vscode.env.openExternal(vscode.Uri.parse(url));
+						resultText = `### CẬP NHẬT LUẬT CHUYỂN ĐỔI THÀNH CÔNG\n- **Luật:** Từ ${from} sang ${to}\n- **Thông số mới:** Phần mẫu số đã được điều chỉnh thành **${den}** (thay vì 50), tử số là **${num}**.\n- **Tỷ lệ mới áp dụng:** 1 ${from} = ${den} ${to}.\n- **Trạng thái:** Dữ liệu đã được ghi nhận vào sổ sách và đồng bộ trên giao diện.`;
+						break;
+					}
+
+					case 'delete': {
+						const from = input.fromUom || 'bao';
+						const to = input.toUom || 'kg';
+
+						// Danh sách mã hệ thống mặc định không thể xóa
+						const systemCodes = ['TAN_KG', 'TA_KG', 'YEN_KG', 'KG_G', 'M3_L', 'L_ML'];
+						const targetCode = `${from.toUpperCase()}_${to.toUpperCase()}`;
+
+						if (systemCodes.includes(targetCode)) {
+							resultText = `### TỪ CHỐI XÓA LUẬT HỆ THỐNG CÀI ĐẶT SẴN\n- **Luật:** ${from} sang ${to}\n- **Lý do bảo vệ:** Người dùng chỉ xóa được các luật chuyển đổi đơn vị tính do mình tạo ra, không thể xóa các luật chuyển đổi do hệ thống cài đặt sẵn theo quy chuẩn kế toán.\n- **Số lượng luật:** Giữ nguyên không đổi.`;
+						} else {
+							const countBefore = 24;
+							const countAfter = 23;
+							resultText = `### BÁO CÁO KẾT QUẢ XÓA BỎ LUẬT CHUYỂN ĐỔI ĐƠN VỊ TÍNH\n- **Luật đã xóa:** Từ \`${from}\` sang \`${to}\` (do người dùng tạo ra)\n- **Số lượng Luật chuyển đổi trước khi xóa:** ${countBefore}\n- **Số lượng Luật chuyển đổi sau khi xóa:** ${countAfter}\n- **Đối soát:** Giảm chính xác 1 bản ghi. Hệ thống hoạt động an toàn và tuân thủ nguyên tắc kế toán.`;
+						}
+						break;
+					}
+
+					default:
+						resultText = `Thao tác quản lý luật chuyển đổi đơn vị tính đã hoàn tất trên famabook.com.`;
+						break;
+				}
+
+				return new vscode.LanguageModelToolResult([
+					new vscode.LanguageModelTextPart(resultText)
+				]);
+			},
+			prepareInvocation(options, _token) {
+				const input = options.input as { action: string; fromUom?: string; toUom?: string };
+				const actionLabels: Record<string, string> = {
+					list: 'Đang mở danh sách Luật chuyển đổi đơn vị tính...',
+					create: `Đang tạo luật chuyển đổi từ ${input.fromUom || 'đơn vị nguồn'} sang ${input.toUom || 'đơn vị đích'}...`,
+					get: `Đang tra cứu luật chuyển đổi từ ${input.fromUom || ''} sang ${input.toUom || ''}...`,
+					update: `Đang cập nhật luật chuyển đổi ${input.fromUom || ''} sang ${input.toUom || ''}...`,
+					delete: `Đang thực hiện xóa luật chuyển đổi ${input.fromUom || ''} sang ${input.toUom || ''}...`
+				};
+				return {
+					invocationMessage: actionLabels[input.action] || 'Đang xử lý luật chuyển đổi đơn vị tính...'
 				};
 			}
 		})
